@@ -1,0 +1,44 @@
+﻿@page "/vehicles"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using CarRentalManagement.Components.Domain
+@using CarRentalManagement.Data
+@implements IAsyncDisposable
+@inject IDbContextFactory<CarRentalManagement.Data.CarRentalManagementContext> DbFactory
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="vehicles/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.Vehicle">
+    <PropertyColumn Property="vehicle => vehicle.year" />
+    <PropertyColumn Property="vehicle => vehicle.LicensePlateNumber" />
+    <PropertyColumn Property="vehicle => vehicle.MakeId" />
+    <PropertyColumn Property="vehicle => vehicle.ModelId" />
+    <PropertyColumn Property="vehicle => vehicle.ColorId" />
+    <PropertyColumn Property="vehicle => vehicle.DateCreated" />
+    <PropertyColumn Property="vehicle => vehicle.DateUpdated" />
+    <PropertyColumn Property="vehicle => vehicle.CreatedBy" />
+    <PropertyColumn Property="vehicle => vehicle.UpdatedBy" />
+
+    <TemplateColumn Context="vehicle">
+        <a href="@($"vehicles/edit?id={vehicle.Id}")">Edit</a> |
+        <a href="@($"vehicles/details?id={vehicle.Id}")">Details</a> |
+        <a href="@($"vehicles/delete?id={vehicle.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private CarRentalManagementContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

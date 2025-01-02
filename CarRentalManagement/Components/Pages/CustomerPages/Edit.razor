@@ -1,0 +1,124 @@
+﻿@page "/customers/edit"
+@using Microsoft.EntityFrameworkCore
+@using CarRentalManagement.Components.Domain
+@inject IDbContextFactory<CarRentalManagement.Data.CarRentalManagementContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>Customer</h2>
+<hr />
+@if (Customer is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="Customer" OnValidSubmit="UpdateCustomer" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert"/>
+                <input type="hidden" name="Customer.Id" value="@Customer.Id" />
+                <div class="mb-3">
+                    <label for="drivinglicense" class="form-label">DrivingLicense:</label>
+                    <InputText id="drivinglicense" @bind-Value="Customer.DrivingLicense" class="form-control" />
+                    <ValidationMessage For="() => Customer.DrivingLicense" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="address" class="form-label">Address:</label>
+                    <InputText id="address" @bind-Value="Customer.Address" class="form-control" />
+                    <ValidationMessage For="() => Customer.Address" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="contactnumber" class="form-label">ContactNumber:</label>
+                    <InputText id="contactnumber" @bind-Value="Customer.ContactNumber" class="form-control" />
+                    <ValidationMessage For="() => Customer.ContactNumber" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="emailaddress" class="form-label">EmailAddress:</label>
+                    <InputText id="emailaddress" @bind-Value="Customer.EmailAddress" class="form-control" />
+                    <ValidationMessage For="() => Customer.EmailAddress" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="datecreated" class="form-label">DateCreated:</label>
+                    <InputDate id="datecreated" @bind-Value="Customer.DateCreated" class="form-control" />
+                    <ValidationMessage For="() => Customer.DateCreated" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="dateupdated" class="form-label">DateUpdated:</label>
+                    <InputDate id="dateupdated" @bind-Value="Customer.DateUpdated" class="form-control" />
+                    <ValidationMessage For="() => Customer.DateUpdated" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="createdby" class="form-label">CreatedBy:</label>
+                    <InputText id="createdby" @bind-Value="Customer.CreatedBy" class="form-control" />
+                    <ValidationMessage For="() => Customer.CreatedBy" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="updatedby" class="form-label">UpdatedBy:</label>
+                    <InputText id="updatedby" @bind-Value="Customer.UpdatedBy" class="form-control" />
+                    <ValidationMessage For="() => Customer.UpdatedBy" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/customers">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    private Customer? Customer { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        Customer ??= await context.Customer.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (Customer is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdateCustomer()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Attach(Customer!).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!CustomerExists(Customer!.Id))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/customers");
+    }
+
+    private bool CustomerExists(int id)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.Customer.Any(e => e.Id == id);
+    }
+}

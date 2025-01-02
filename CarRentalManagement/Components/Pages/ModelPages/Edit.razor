@@ -1,0 +1,109 @@
+﻿@page "/models/edit"
+@using Microsoft.EntityFrameworkCore
+@using CarRentalManagement.Components.Domain
+@inject IDbContextFactory<CarRentalManagement.Data.CarRentalManagementContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>Model</h2>
+<hr />
+@if (Model is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="Model" OnValidSubmit="UpdateModel" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert"/>
+                <input type="hidden" name="Model.Id" value="@Model.Id" />
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name:</label>
+                    <InputText id="name" @bind-Value="Model.Name" class="form-control" />
+                    <ValidationMessage For="() => Model.Name" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="datecreated" class="form-label">DateCreated:</label>
+                    <InputDate id="datecreated" @bind-Value="Model.DateCreated" class="form-control" />
+                    <ValidationMessage For="() => Model.DateCreated" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="dateupdated" class="form-label">DateUpdated:</label>
+                    <InputDate id="dateupdated" @bind-Value="Model.DateUpdated" class="form-control" />
+                    <ValidationMessage For="() => Model.DateUpdated" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="createdby" class="form-label">CreatedBy:</label>
+                    <InputText id="createdby" @bind-Value="Model.CreatedBy" class="form-control" />
+                    <ValidationMessage For="() => Model.CreatedBy" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="updatedby" class="form-label">UpdatedBy:</label>
+                    <InputText id="updatedby" @bind-Value="Model.UpdatedBy" class="form-control" />
+                    <ValidationMessage For="() => Model.UpdatedBy" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/models">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    private Model? Model { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        Model ??= await context.Model.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (Model is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdateModel()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Attach(Model!).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!ModelExists(Model!.Id))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/models");
+    }
+
+    private bool ModelExists(int id)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.Model.Any(e => e.Id == id);
+    }
+}

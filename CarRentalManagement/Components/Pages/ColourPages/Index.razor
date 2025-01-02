@@ -1,0 +1,40 @@
+﻿@page "/colours"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using CarRentalManagement.Components.Domain
+@using CarRentalManagement.Data
+@implements IAsyncDisposable
+@inject IDbContextFactory<CarRentalManagement.Data.CarRentalManagementContext> DbFactory
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="colours/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.Colour">
+    <PropertyColumn Property="colour => colour.Name" />
+    <PropertyColumn Property="colour => colour.DateCreated" />
+    <PropertyColumn Property="colour => colour.DateUpdated" />
+    <PropertyColumn Property="colour => colour.CreatedBy" />
+    <PropertyColumn Property="colour => colour.UpdatedBy" />
+
+    <TemplateColumn Context="colour">
+        <a href="@($"colours/edit?id={colour.Id}")">Edit</a> |
+        <a href="@($"colours/details?id={colour.Id}")">Details</a> |
+        <a href="@($"colours/delete?id={colour.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private CarRentalManagementContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

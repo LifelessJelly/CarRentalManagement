@@ -1,0 +1,71 @@
+﻿@page "/models/delete"
+@using Microsoft.EntityFrameworkCore
+@using CarRentalManagement.Components.Domain
+@inject IDbContextFactory<CarRentalManagement.Data.CarRentalManagementContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Delete</PageTitle>
+
+<h1>Delete</h1>
+
+<p>Are you sure you want to delete this?</p>
+<div>
+    <h2>Model</h2>
+    <hr />
+    @if (model is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">Name</dt>
+            <dd class="col-sm-10">@model.Name</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">DateCreated</dt>
+            <dd class="col-sm-10">@model.DateCreated</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">DateUpdated</dt>
+            <dd class="col-sm-10">@model.DateUpdated</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">CreatedBy</dt>
+            <dd class="col-sm-10">@model.CreatedBy</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">UpdatedBy</dt>
+            <dd class="col-sm-10">@model.UpdatedBy</dd>
+        </dl>
+        <EditForm method="post" Model="model" OnValidSubmit="DeleteModel" FormName="delete" Enhance>
+            <button type="submit" class="btn btn-danger" disabled="@(model is null)">Delete</button> |
+            <a href="/models">Back to List</a>
+        </EditForm>
+    }
+</div>
+
+@code {
+    private Model? model;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        model = await context.Model.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (model is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    private async Task DeleteModel()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Model.Remove(model!);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/models");
+    }
+}

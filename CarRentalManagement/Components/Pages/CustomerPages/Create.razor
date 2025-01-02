@@ -1,0 +1,79 @@
+﻿@page "/customers/create"
+@using Microsoft.EntityFrameworkCore
+@using CarRentalManagement.Components.Domain
+@inject IDbContextFactory<CarRentalManagement.Data.CarRentalManagementContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>Customer</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Customer" OnValidSubmit="AddCustomer" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <label for="drivinglicense" class="form-label">DrivingLicense:</label> 
+                <InputText id="drivinglicense" @bind-Value="Customer.DrivingLicense" class="form-control" /> 
+                <ValidationMessage For="() => Customer.DrivingLicense" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="address" class="form-label">Address:</label> 
+                <InputText id="address" @bind-Value="Customer.Address" class="form-control" /> 
+                <ValidationMessage For="() => Customer.Address" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="contactnumber" class="form-label">ContactNumber:</label> 
+                <InputText id="contactnumber" @bind-Value="Customer.ContactNumber" class="form-control" /> 
+                <ValidationMessage For="() => Customer.ContactNumber" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="emailaddress" class="form-label">EmailAddress:</label> 
+                <InputText id="emailaddress" @bind-Value="Customer.EmailAddress" class="form-control" /> 
+                <ValidationMessage For="() => Customer.EmailAddress" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="datecreated" class="form-label">DateCreated:</label> 
+                <InputDate id="datecreated" @bind-Value="Customer.DateCreated" class="form-control" /> 
+                <ValidationMessage For="() => Customer.DateCreated" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="dateupdated" class="form-label">DateUpdated:</label> 
+                <InputDate id="dateupdated" @bind-Value="Customer.DateUpdated" class="form-control" /> 
+                <ValidationMessage For="() => Customer.DateUpdated" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="createdby" class="form-label">CreatedBy:</label> 
+                <InputText id="createdby" @bind-Value="Customer.CreatedBy" class="form-control" /> 
+                <ValidationMessage For="() => Customer.CreatedBy" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="updatedby" class="form-label">UpdatedBy:</label> 
+                <InputText id="updatedby" @bind-Value="Customer.UpdatedBy" class="form-control" /> 
+                <ValidationMessage For="() => Customer.UpdatedBy" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/customers">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private Customer Customer { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddCustomer()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Customer.Add(Customer);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/customers");
+    }
+}

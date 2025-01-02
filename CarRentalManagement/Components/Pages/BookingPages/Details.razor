@@ -1,0 +1,60 @@
+﻿@page "/bookings/details"
+@using Microsoft.EntityFrameworkCore
+@using CarRentalManagement.Components.Domain
+@inject IDbContextFactory<CarRentalManagement.Data.CarRentalManagementContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>Booking</h2>
+    <hr />
+    @if (booking is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">DateOut</dt>
+            <dd class="col-sm-10">@booking.DateOut</dd>
+            <dt class="col-sm-2">DateIn</dt>
+            <dd class="col-sm-10">@booking.DateIn</dd>
+            <dt class="col-sm-2">VehicleId</dt>
+            <dd class="col-sm-10">@booking.VehicleId</dd>
+            <dt class="col-sm-2">CustomerId</dt>
+            <dd class="col-sm-10">@booking.CustomerId</dd>
+            <dt class="col-sm-2">DateCreated</dt>
+            <dd class="col-sm-10">@booking.DateCreated</dd>
+            <dt class="col-sm-2">DateUpdated</dt>
+            <dd class="col-sm-10">@booking.DateUpdated</dd>
+            <dt class="col-sm-2">CreatedBy</dt>
+            <dd class="col-sm-10">@booking.CreatedBy</dd>
+            <dt class="col-sm-2">UpdatedBy</dt>
+            <dd class="col-sm-10">@booking.UpdatedBy</dd>
+        </dl>
+        <div>
+            <a href="@($"/bookings/edit?id={booking.Id}")">Edit</a> |
+            <a href="@($"/bookings")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private Booking? booking;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        booking = await context.Booking.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (booking is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

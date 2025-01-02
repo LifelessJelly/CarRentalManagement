@@ -1,0 +1,84 @@
+﻿@page "/vehicles/create"
+@using Microsoft.EntityFrameworkCore
+@using CarRentalManagement.Components.Domain
+@inject IDbContextFactory<CarRentalManagement.Data.CarRentalManagementContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>Vehicle</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Vehicle" OnValidSubmit="AddVehicle" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <label for="year" class="form-label">year:</label> 
+                <InputNumber id="year" @bind-Value="Vehicle.year" class="form-control" /> 
+                <ValidationMessage For="() => Vehicle.year" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="licenseplatenumber" class="form-label">LicensePlateNumber:</label> 
+                <InputText id="licenseplatenumber" @bind-Value="Vehicle.LicensePlateNumber" class="form-control" /> 
+                <ValidationMessage For="() => Vehicle.LicensePlateNumber" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="makeid" class="form-label">MakeId:</label> 
+                <InputNumber id="makeid" @bind-Value="Vehicle.MakeId" class="form-control" /> 
+                <ValidationMessage For="() => Vehicle.MakeId" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="modelid" class="form-label">ModelId:</label> 
+                <InputNumber id="modelid" @bind-Value="Vehicle.ModelId" class="form-control" /> 
+                <ValidationMessage For="() => Vehicle.ModelId" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="colorid" class="form-label">ColorId:</label> 
+                <InputNumber id="colorid" @bind-Value="Vehicle.ColorId" class="form-control" /> 
+                <ValidationMessage For="() => Vehicle.ColorId" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="datecreated" class="form-label">DateCreated:</label> 
+                <InputDate id="datecreated" @bind-Value="Vehicle.DateCreated" class="form-control" /> 
+                <ValidationMessage For="() => Vehicle.DateCreated" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="dateupdated" class="form-label">DateUpdated:</label> 
+                <InputDate id="dateupdated" @bind-Value="Vehicle.DateUpdated" class="form-control" /> 
+                <ValidationMessage For="() => Vehicle.DateUpdated" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="createdby" class="form-label">CreatedBy:</label> 
+                <InputText id="createdby" @bind-Value="Vehicle.CreatedBy" class="form-control" /> 
+                <ValidationMessage For="() => Vehicle.CreatedBy" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="updatedby" class="form-label">UpdatedBy:</label> 
+                <InputText id="updatedby" @bind-Value="Vehicle.UpdatedBy" class="form-control" /> 
+                <ValidationMessage For="() => Vehicle.UpdatedBy" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/vehicles">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private Vehicle Vehicle { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddVehicle()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Vehicle.Add(Vehicle);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/vehicles");
+    }
+}

@@ -1,15 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-using CarRentalManagement.Configurations.Entities;
+﻿using CarRentalManagement.Configurations.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarRentalManagement.Data
 {
-    public class CarRentalManagementContext : DbContext
+    public class CarRentalManagementContext(DbContextOptions<CarRentalManagementContext> options) : IdentityDbContext<CarRentalManagementUser>(options)
     {
-        public CarRentalManagementContext (DbContextOptions<CarRentalManagementContext> options)
-            : base(options)
-        {
-        }
-
         public DbSet<Components.Domain.Make> Make { get; set; } = default!;
         public DbSet<Components.Domain.Model> Model { get; set; } = default!;
         public DbSet<Components.Domain.Colour> Colour { get; set; } = default!;
