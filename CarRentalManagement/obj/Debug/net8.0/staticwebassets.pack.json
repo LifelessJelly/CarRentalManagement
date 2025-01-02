@@ -2,7 +2,7 @@
   "Files": [
     {
       "Id": "C:\\Users\\josep\\RiderProjects\\CarRentalManagement\\CarRentalManagement\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\CarRentalManagement.bundle.scp.css",
-      "PackagePath": "staticwebassets\\CarRentalManagement.bundle.scp.css"
+      "PackagePath": "staticwebassets\\CarRentalManagement.sq166bi1z2.bundle.scp.css"
     },
     {
       "Id": "C:\\Users\\josep\\RiderProjects\\CarRentalManagement\\CarRentalManagement\\wwwroot\\app.css",
@@ -19,6 +19,10 @@
     {
       "Id": "C:\\Users\\josep\\RiderProjects\\CarRentalManagement\\CarRentalManagement\\wwwroot\\favicon.png",
       "PackagePath": "staticwebassets\\favicon.png"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.CarRentalManagement.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
     },
     {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.CarRentalManagement.Microsoft.AspNetCore.StaticWebAssets.props",
