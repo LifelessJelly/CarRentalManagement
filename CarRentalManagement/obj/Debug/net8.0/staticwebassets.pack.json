@@ -1,0 +1,41 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\josep\\RiderProjects\\CarRentalManagement\\CarRentalManagement\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\CarRentalManagement.bundle.scp.css",
+      "PackagePath": "staticwebassets\\CarRentalManagement.bundle.scp.css"
+    },
+    {
+      "Id": "C:\\Users\\josep\\RiderProjects\\CarRentalManagement\\CarRentalManagement\\wwwroot\\app.css",
+      "PackagePath": "staticwebassets\\app.css"
+    },
+    {
+      "Id": "C:\\Users\\josep\\RiderProjects\\CarRentalManagement\\CarRentalManagement\\wwwroot\\bootstrap\\bootstrap.min.css",
+      "PackagePath": "staticwebassets\\bootstrap\\bootstrap.min.css"
+    },
+    {
+      "Id": "C:\\Users\\josep\\RiderProjects\\CarRentalManagement\\CarRentalManagement\\wwwroot\\bootstrap\\bootstrap.min.css.map",
+      "PackagePath": "staticwebassets\\bootstrap\\bootstrap.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\josep\\RiderProjects\\CarRentalManagement\\CarRentalManagement\\wwwroot\\favicon.png",
+      "PackagePath": "staticwebassets\\favicon.png"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.CarRentalManagement.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.CarRentalManagement.props",
+      "PackagePath": "build\\CarRentalManagement.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.CarRentalManagement.props",
+      "PackagePath": "buildMultiTargeting\\CarRentalManagement.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.CarRentalManagement.props",
+      "PackagePath": "buildTransitive\\CarRentalManagement.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
