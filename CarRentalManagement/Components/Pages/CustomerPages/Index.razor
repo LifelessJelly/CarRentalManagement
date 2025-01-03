@@ -4,7 +4,8 @@
 @using CarRentalManagement.Components.Domain
 @using CarRentalManagement.Data
 @implements IAsyncDisposable
-@inject IDbContextFactory<CarRentalManagement.Data.CarRentalManagementContext> DbFactory
+@inject IDbContextFactory<CarRentalManagementContext> DbFactory
+
 
 <PageTitle>Index</PageTitle>
 
@@ -14,8 +15,14 @@
     <a href="customers/create">Create New</a>
 </p>
 
-<QuickGrid Class="table" Items="context.Customer">
-    <PropertyColumn Property="customer => customer.DrivingLicense" />
+<QuickGrid Class="table" Items="FilteredCustomers">
+    <PropertyColumn Property="customer => customer.DrivingLicense" Sortable="true">
+        <ColumnOptions>
+            <div>
+                <input type="search" @bind="searchText" @bind:event="oninput" autofocus />
+            </div>
+        </ColumnOptions>
+    </PropertyColumn>
     <PropertyColumn Property="customer => customer.Address" />
     <PropertyColumn Property="customer => customer.ContactNumber" />
     <PropertyColumn Property="customer => customer.EmailAddress" />
@@ -27,11 +34,18 @@
     <TemplateColumn Context="customer">
         <a href="@($"customers/edit?id={customer.Id}")">Edit</a> |
         <a href="@($"customers/details?id={customer.Id}")">Details</a> |
-        <a href="@($"customers/delete?id={customer.Id}")">Delete</a>
+        <AuthorizeView Roles="Administrator">
+            | <a href="@($"customers/delete?id={customer.Id}")">Delete</a>
+        </AuthorizeView>
     </TemplateColumn>
 </QuickGrid>
 
 @code {
+    
+    private string searchText = "";
+    private IQueryable<Customer> FilteredCustomers => context.Customer.Where(c =>
+        c.DrivingLicense.Contains(searchText));
+    
     private CarRentalManagementContext context = default!;
 
     protected override void OnInitialized()

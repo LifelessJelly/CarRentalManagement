@@ -19,4 +19,45 @@
       <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
     </ItemGroup>
 
+    <ItemGroup>
+      <AdditionalFiles Include="Components\Pages\AdminPages\ColourPages\Create.razor" />
+      <AdditionalFiles Include="Components\Pages\AdminPages\ColourPages\Delete.razor" />
+      <AdditionalFiles Include="Components\Pages\AdminPages\ColourPages\Details.razor" />
+      <AdditionalFiles Include="Components\Pages\AdminPages\ColourPages\Edit.razor" />
+      <AdditionalFiles Include="Components\Pages\AdminPages\ColourPages\Index.razor" />
+      <AdditionalFiles Include="Components\Pages\AdminPages\MakePages\Create.razor" />
+      <AdditionalFiles Include="Components\Pages\AdminPages\MakePages\Delete.razor" />
+      <AdditionalFiles Include="Components\Pages\AdminPages\MakePages\Details.razor" />
+      <AdditionalFiles Include="Components\Pages\AdminPages\MakePages\Edit.razor" />
+      <AdditionalFiles Include="Components\Pages\AdminPages\MakePages\Index.razor" />
+      <AdditionalFiles Include="Components\Pages\AdminPages\ModelPages\Create.razor" />
+      <AdditionalFiles Include="Components\Pages\AdminPages\ModelPages\Delete.razor" />
+      <AdditionalFiles Include="Components\Pages\AdminPages\ModelPages\Details.razor" />
+      <AdditionalFiles Include="Components\Pages\AdminPages\ModelPages\Edit.razor" />
+      <AdditionalFiles Include="Components\Pages\AdminPages\ModelPages\Index.razor" />
+      <AdditionalFiles Include="Components\Pages\AdminPages\VehiclePages\Create.razor" />
+      <AdditionalFiles Include="Components\Pages\AdminPages\VehiclePages\Delete.razor" />
+      <AdditionalFiles Include="Components\Pages\AdminPages\VehiclePages\Details.razor" />
+      <AdditionalFiles Include="Components\Pages\AdminPages\VehiclePages\Edit.razor" />
+      <AdditionalFiles Include="Components\Pages\AdminPages\VehiclePages\Index.razor" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Components\Pages\MakePages\Create.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\MakePages\Delete.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\MakePages\Details.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\MakePages\Edit.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\MakePages\Index.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\ModelPages\Create.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\ModelPages\Delete.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\ModelPages\Details.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\ModelPages\Edit.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\ModelPages\Index.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\VehiclePages\Create.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\VehiclePages\Delete.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\VehiclePages\Details.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\VehiclePages\Edit.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\VehiclePages\Index.razor" />
+    </ItemGroup>
+
 </Project>

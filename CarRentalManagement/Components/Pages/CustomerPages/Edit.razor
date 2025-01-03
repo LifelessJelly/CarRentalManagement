@@ -3,6 +3,7 @@
 @using CarRentalManagement.Components.Domain
 @inject IDbContextFactory<CarRentalManagement.Data.CarRentalManagementContext> DbFactory
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider authenticationStateProvider
 
 <PageTitle>Edit</PageTitle>
 
@@ -79,6 +80,8 @@ else
     [SupplyParameterFromForm]
     private Customer? Customer { get; set; }
 
+    private string userId = "System";
+    
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
@@ -88,6 +91,15 @@ else
         {
             NavigationManager.NavigateTo("notfound");
         }
+        
+        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+// Get the userId claim
+        var userIdClaim = user.FindFirst("userId");
+        if (userIdClaim != null)
+        {
+            userId = userIdClaim.Value;
+        }
     }
 
     // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -95,6 +107,8 @@ else
     private async Task UpdateCustomer()
     {
         using var context = DbFactory.CreateDbContext();
+        Customer.UpdatedBy = userId;
+        Customer.DateUpdated= DateTime.Now;
         context.Attach(Customer!).State = EntityState.Modified;
 
         try

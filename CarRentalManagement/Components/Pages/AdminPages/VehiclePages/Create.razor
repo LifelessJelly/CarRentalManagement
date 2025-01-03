@@ -1,6 +1,7 @@
 ﻿@page "/vehicles/create"
 @using Microsoft.EntityFrameworkCore
 @using CarRentalManagement.Components.Domain
+@using CarRentalManagement.Data
 @inject IDbContextFactory<CarRentalManagement.Data.CarRentalManagementContext> DbFactory
 @inject NavigationManager NavigationManager
 
@@ -26,36 +27,54 @@
                 <ValidationMessage For="() => Vehicle.LicensePlateNumber" class="text-danger" /> 
             </div>        
             <div class="mb-3">
-                <label for="makeid" class="form-label">MakeId:</label> 
-                <InputNumber id="makeid" @bind-Value="Vehicle.MakeId" class="form-control" /> 
+                <label for="makeid" class="form-label">Make:</label>
+                <InputSelect id="makeid" @bind-Value="Vehicle.MakeId" class="form-control">
+                    <option value="">-- Select Make --</option>
+                    @foreach (var make in Makes)
+                    {
+                        <option value="@make.Id">@make.Name</option>
+                    }
+                </InputSelect> 
                 <ValidationMessage For="() => Vehicle.MakeId" class="text-danger" /> 
             </div>        
             <div class="mb-3">
-                <label for="modelid" class="form-label">ModelId:</label> 
-                <InputNumber id="modelid" @bind-Value="Vehicle.ModelId" class="form-control" /> 
+                <label for="modelid" class="form-label">Model:</label>
+                <InputSelect id="modelid" @bind-Value="Vehicle.ModelId" class="form-control">
+                    <option value="">-- Select Model --</option>
+                    @foreach (var model in Models)
+                    {
+                        <option value="@model.Id">@model.Name</option>
+                    }
+                </InputSelect> 
                 <ValidationMessage For="() => Vehicle.ModelId" class="text-danger" /> 
             </div>        
             <div class="mb-3">
-                <label for="colorid" class="form-label">ColorId:</label> 
-                <InputNumber id="colorid" @bind-Value="Vehicle.ColorId" class="form-control" /> 
+                <label for="colorid" class="form-label">Color:</label>
+                <InputSelect id="colourid" @bind-Value="Vehicle.ColorId" class="form-control">
+                    <option value="">-- Select Colour --</option>
+                    @foreach (var colour in Colours)
+                    {
+                        <option value="@colour.Id">@colour.Name</option>
+                    }
+                </InputSelect> 
                 <ValidationMessage For="() => Vehicle.ColorId" class="text-danger" /> 
             </div>        
-            <div class="mb-3">
+            <div class="mb-3" hidden>
                 <label for="datecreated" class="form-label">DateCreated:</label> 
                 <InputDate id="datecreated" @bind-Value="Vehicle.DateCreated" class="form-control" /> 
                 <ValidationMessage For="() => Vehicle.DateCreated" class="text-danger" /> 
             </div>        
-            <div class="mb-3">
+            <div class="mb-3" hidden>
                 <label for="dateupdated" class="form-label">DateUpdated:</label> 
                 <InputDate id="dateupdated" @bind-Value="Vehicle.DateUpdated" class="form-control" /> 
                 <ValidationMessage For="() => Vehicle.DateUpdated" class="text-danger" /> 
             </div>        
-            <div class="mb-3">
+            <div class="mb-3" hidden>
                 <label for="createdby" class="form-label">CreatedBy:</label> 
                 <InputText id="createdby" @bind-Value="Vehicle.CreatedBy" class="form-control" /> 
                 <ValidationMessage For="() => Vehicle.CreatedBy" class="text-danger" /> 
             </div>        
-            <div class="mb-3">
+            <div class="mb-3" hidden>
                 <label for="updatedby" class="form-label">UpdatedBy:</label> 
                 <InputText id="updatedby" @bind-Value="Vehicle.UpdatedBy" class="form-control" /> 
                 <ValidationMessage For="() => Vehicle.UpdatedBy" class="text-danger" /> 
@@ -72,6 +91,19 @@
 @code {
     [SupplyParameterFromForm]
     private Vehicle Vehicle { get; set; } = new();
+    
+    private CarRentalManagementContext _context = default!;
+    private IList<Make> Makes;
+    private IList<Model> Models;
+    private IList<Colour> Colours;
+//OnInitialized method to get all Makes, Models and Colours
+    protected override void OnInitialized()
+    {
+        _context = DbFactory.CreateDbContext();
+        Makes = _context.Make.ToList();
+        Models = _context.Model.ToList();
+        Colours = _context.Colour.ToList();
+    }
 
     // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
     private async Task AddVehicle()

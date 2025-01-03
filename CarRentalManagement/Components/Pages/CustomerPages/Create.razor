@@ -3,6 +3,7 @@
 @using CarRentalManagement.Components.Domain
 @inject IDbContextFactory<CarRentalManagement.Data.CarRentalManagementContext> DbFactory
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider authenticationStateProvider
 
 <PageTitle>Create</PageTitle>
 
@@ -35,22 +36,22 @@
                 <InputText id="emailaddress" @bind-Value="Customer.EmailAddress" class="form-control" /> 
                 <ValidationMessage For="() => Customer.EmailAddress" class="text-danger" /> 
             </div>        
-            <div class="mb-3">
+            <div class="mb-3" hidden>
                 <label for="datecreated" class="form-label">DateCreated:</label> 
                 <InputDate id="datecreated" @bind-Value="Customer.DateCreated" class="form-control" /> 
                 <ValidationMessage For="() => Customer.DateCreated" class="text-danger" /> 
             </div>        
-            <div class="mb-3">
+            <div class="mb-3" hidden>
                 <label for="dateupdated" class="form-label">DateUpdated:</label> 
                 <InputDate id="dateupdated" @bind-Value="Customer.DateUpdated" class="form-control" /> 
                 <ValidationMessage For="() => Customer.DateUpdated" class="text-danger" /> 
             </div>        
-            <div class="mb-3">
+            <div class="mb-3" hidden>
                 <label for="createdby" class="form-label">CreatedBy:</label> 
                 <InputText id="createdby" @bind-Value="Customer.CreatedBy" class="form-control" /> 
                 <ValidationMessage For="() => Customer.CreatedBy" class="text-danger" /> 
             </div>        
-            <div class="mb-3">
+            <div class="mb-3" hidden>
                 <label for="updatedby" class="form-label">UpdatedBy:</label> 
                 <InputText id="updatedby" @bind-Value="Customer.UpdatedBy" class="form-control" /> 
                 <ValidationMessage For="() => Customer.UpdatedBy" class="text-danger" /> 
@@ -72,8 +73,31 @@
     private async Task AddCustomer()
     {
         using var context = DbFactory.CreateDbContext();
+        
+        Customer.CreatedBy = userId;
+        Customer.UpdatedBy = userId;
+//Set the DateCreated and DateUpdated fields to the current date and time.
+        Customer.DateCreated = DateTime.Now;
+        Customer.DateUpdated = DateTime.Now;
+        
         context.Customer.Add(Customer);
         await context.SaveChangesAsync();
         NavigationManager.NavigateTo("/customers");
+    }
+    
+    private string userId = "System";
+//Inject the AuthenticationStateProvider to get the user id.
+    
+//Override the OnInitialized method to get the user id.
+    protected override async void OnInitialized()
+    {
+        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+    // Get the userId claim
+        var userIdClaim = user.FindFirst("userId");
+        if (userIdClaim != null)
+        {
+            userId = userIdClaim.Value;
+        }
     }
 }

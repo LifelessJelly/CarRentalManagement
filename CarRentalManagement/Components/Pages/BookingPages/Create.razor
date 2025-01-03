@@ -1,8 +1,10 @@
 ﻿@page "/bookings/create"
 @using Microsoft.EntityFrameworkCore
 @using CarRentalManagement.Components.Domain
-@inject IDbContextFactory<CarRentalManagement.Data.CarRentalManagementContext> DbFactory
+@using CarRentalManagement.Data
+@inject IDbContextFactory<CarRentalManagementContext> DbFactory
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>Create</PageTitle>
 
@@ -26,31 +28,44 @@
                 <ValidationMessage For="() => Booking.DateIn" class="text-danger" /> 
             </div>        
             <div class="mb-3">
-                <label for="vehicleid" class="form-label">VehicleId:</label> 
-                <InputNumber id="vehicleid" @bind-Value="Booking.VehicleId" class="form-control" /> 
+                <label for="vehicleid" class="form-label">Vehicle:</label>
+                <InputSelect id="vehicleId" @bind-Value="Booking.VehicleId" class="form-control">
+                    <option value="">-- Select Vehicle --</option>
+                    @foreach (var vehicle in Vehicles)
+                    {
+                        <option value="@vehicle.Id">@MakesDict[vehicle.MakeId].Name -
+                            @ModelsDict[vehicle.ModelId].Name - @ColoursDict[vehicle.ColorId].Name</option>
+                    }
+                </InputSelect>
                 <ValidationMessage For="() => Booking.VehicleId" class="text-danger" /> 
             </div>        
             <div class="mb-3">
-                <label for="customerid" class="form-label">CustomerId:</label> 
-                <InputNumber id="customerid" @bind-Value="Booking.CustomerId" class="form-control" /> 
+                <label for="customerid" class="form-label">CustomerEmail:</label> 
+                <InputSelect id="customerid" @bind-Value="Booking.CustomerId" class="form-control">
+                    <option value="">--Select Customer--</option>
+                    @foreach (var customer in Customers)
+                    {
+                        <option value="@customer.Id">@customer.EmailAddress</option>
+                    }
+                </InputSelect>
                 <ValidationMessage For="() => Booking.CustomerId" class="text-danger" /> 
             </div>        
-            <div class="mb-3">
+            <div class="mb-3" hidden>
                 <label for="datecreated" class="form-label">DateCreated:</label> 
                 <InputDate id="datecreated" @bind-Value="Booking.DateCreated" class="form-control" /> 
                 <ValidationMessage For="() => Booking.DateCreated" class="text-danger" /> 
             </div>        
-            <div class="mb-3">
+            <div class="mb-3" hidden>
                 <label for="dateupdated" class="form-label">DateUpdated:</label> 
                 <InputDate id="dateupdated" @bind-Value="Booking.DateUpdated" class="form-control" /> 
                 <ValidationMessage For="() => Booking.DateUpdated" class="text-danger" /> 
             </div>        
-            <div class="mb-3">
+            <div class="mb-3" hidden>
                 <label for="createdby" class="form-label">CreatedBy:</label> 
                 <InputText id="createdby" @bind-Value="Booking.CreatedBy" class="form-control" /> 
                 <ValidationMessage For="() => Booking.CreatedBy" class="text-danger" /> 
             </div>        
-            <div class="mb-3">
+            <div class="mb-3" hidden>
                 <label for="updatedby" class="form-label">UpdatedBy:</label> 
                 <InputText id="updatedby" @bind-Value="Booking.UpdatedBy" class="form-control" /> 
                 <ValidationMessage For="() => Booking.UpdatedBy" class="text-danger" /> 
@@ -66,12 +81,66 @@
 
 @code {
     [SupplyParameterFromForm]
-    private Booking Booking { get; set; } = new();
+    private Booking Booking { get; set; } = new()
+    {
+//Set the default values for the DateOut and DateIn fields.
+        DateOut = DateTime.Now,
+        DateIn = DateTime.Now.AddDays(1)
+    };
 
+    private CarRentalManagementContext context = default!;
+    private IList<Vehicle> Vehicles;
+    private IList<Customer> Customers;
+    private Dictionary<int, Make> MakesDict = new();
+    private Dictionary<int, Model> ModelsDict = new();
+    private Dictionary<int, Colour> ColoursDict = new();
+    
+    //Create userId string to store the user id, default value is "System".
+    private string userId = "System";
+//Create isAdmin boolean to store the user role, default value is false.
+    private bool _isAdmin;
+    protected override async void OnInitialized()
+    {
+// Retrieve authentication state and user information
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+// Get the userId claim
+        var userIdClaim = user.FindFirst("userId");
+        if (userIdClaim != null)
+        {
+            userId = userIdClaim.Value;
+        }
+// Check if the user is authenticated and is an administrator
+        if (user.Identity != null && user.Identity.IsAuthenticated)
+        {
+            _isAdmin = user.IsInRole("Administrator");
+        }
+        //Initialize the DbContext
+        context = DbFactory.CreateDbContext();
+//Load data from the database
+        Vehicles = context.Vehicle.ToList();
+//Get all the customers created by the user or all customers if the user is an administrator
+        Customers = context.Customer.Where(c => c.CreatedBy == userId).ToList();
+        if (_isAdmin)
+        {
+            Customers = context.Customer.ToList();
+        }
+        MakesDict = context.Make.ToDictionary(o => o.Id, o => o);
+        ModelsDict = context.Model.ToDictionary(o => o.Id, o => o);
+        ColoursDict = context.Colour.ToDictionary(o => o.Id, o => o);
+    }
     // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
     private async Task AddBooking()
     {
         using var context = DbFactory.CreateDbContext();
+        
+        //Set the userId to the CreatedBy and UpdatedBy fields.
+        Booking.CreatedBy = userId;
+        Booking.UpdatedBy = userId;
+    //Set the DateCreated and DateUpdated fields to the current date and time.
+        Booking.DateCreated = DateTime.Now;
+        Booking.DateUpdated = DateTime.Now;
+        
         context.Booking.Add(Booking);
         await context.SaveChangesAsync();
         NavigationManager.NavigateTo("/bookings");

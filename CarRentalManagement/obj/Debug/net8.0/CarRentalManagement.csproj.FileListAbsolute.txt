@@ -27,7 +27,6 @@ C:\Users\josep\RiderProjects\CarRentalManagement\CarRentalManagement\obj\Debug\n
 C:\Users\josep\RiderProjects\CarRentalManagement\CarRentalManagement\obj\Debug\net8.0\CarRentalManagement.pdb
 C:\Users\josep\RiderProjects\CarRentalManagement\CarRentalManagement\obj\Debug\net8.0\CarRentalManagement.genruntimeconfig.cache
 C:\Users\josep\RiderProjects\CarRentalManagement\CarRentalManagement\obj\Debug\net8.0\ref\CarRentalManagement.dll
-C:\Users\josep\RiderProjects\CarRentalManagement\CarRentalManagement\bin\Debug\net8.0\CarRentalManagement.staticwebassets.endpoints.json
 C:\Users\josep\RiderProjects\CarRentalManagement\CarRentalManagement\bin\Debug\net8.0\Azure.Core.dll
 C:\Users\josep\RiderProjects\CarRentalManagement\CarRentalManagement\bin\Debug\net8.0\Azure.Identity.dll
 C:\Users\josep\RiderProjects\CarRentalManagement\CarRentalManagement\bin\Debug\net8.0\Humanizer.dll
@@ -266,8 +265,6 @@ C:\Users\josep\RiderProjects\CarRentalManagement\CarRentalManagement\bin\Debug\n
 C:\Users\josep\RiderProjects\CarRentalManagement\CarRentalManagement\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Windows.Extensions.dll
 C:\Users\josep\RiderProjects\CarRentalManagement\CarRentalManagement\obj\Debug\net8.0\CarRentalManagement.csproj.AssemblyReference.cache
 C:\Users\josep\RiderProjects\CarRentalManagement\CarRentalManagement\obj\Debug\net8.0\CarRentalManagement.sourcelink.json
-C:\Users\josep\RiderProjects\CarRentalManagement\CarRentalManagement\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-C:\Users\josep\RiderProjects\CarRentalManagement\CarRentalManagement\obj\Debug\net8.0\staticwebassets\msbuild.CarRentalManagement.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
 C:\Users\josep\RiderProjects\CarRentalManagement\CarRentalManagement\obj\Debug\net8.0\CarRenta.B0CA002B.Up2Date
 C:\Users\josep\RiderProjects\CarRentalManagement\CarRentalManagement\bin\Debug\net8.0\Microsoft.AspNetCore.Cryptography.Internal.dll
 C:\Users\josep\RiderProjects\CarRentalManagement\CarRentalManagement\bin\Debug\net8.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
@@ -277,3 +274,6 @@ C:\Users\josep\RiderProjects\CarRentalManagement\CarRentalManagement\bin\Debug\n
 C:\Users\josep\RiderProjects\CarRentalManagement\CarRentalManagement\bin\Debug\net8.0\Microsoft.Extensions.Identity.Core.dll
 C:\Users\josep\RiderProjects\CarRentalManagement\CarRentalManagement\bin\Debug\net8.0\Microsoft.Extensions.Identity.Stores.dll
 C:\Users\josep\RiderProjects\CarRentalManagement\CarRentalManagement\obj\Debug\net8.0\CarRentalManagement.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\josep\RiderProjects\CarRentalManagement\CarRentalManagement\bin\Debug\net8.0\CarRentalManagement.staticwebassets.endpoints.json
+C:\Users\josep\RiderProjects\CarRentalManagement\CarRentalManagement\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+C:\Users\josep\RiderProjects\CarRentalManagement\CarRentalManagement\obj\Debug\net8.0\staticwebassets\msbuild.CarRentalManagement.Microsoft.AspNetCore.StaticWebAssetEndpoints.props

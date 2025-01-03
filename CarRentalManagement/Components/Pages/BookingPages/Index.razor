@@ -4,7 +4,9 @@
 @using CarRentalManagement.Components.Domain
 @using CarRentalManagement.Data
 @implements IAsyncDisposable
-@inject IDbContextFactory<CarRentalManagement.Data.CarRentalManagementContext> DbFactory
+@inject IDbContextFactory<CarRentalManagementContext> DbFactory
+@inject AuthenticationStateProvider authenticationStateProvider
+@rendermode InteractiveServer
 
 <PageTitle>Index</PageTitle>
 
@@ -14,28 +16,101 @@
     <a href="bookings/create">Create New</a>
 </p>
 
-<QuickGrid Class="table" Items="context.Booking">
-    <PropertyColumn Property="booking => booking.DateOut" />
-    <PropertyColumn Property="booking => booking.DateIn" />
-    <PropertyColumn Property="booking => booking.VehicleId" />
-    <PropertyColumn Property="booking => booking.CustomerId" />
-    <PropertyColumn Property="booking => booking.DateCreated" />
-    <PropertyColumn Property="booking => booking.DateUpdated" />
-    <PropertyColumn Property="booking => booking.CreatedBy" />
-    <PropertyColumn Property="booking => booking.UpdatedBy" />
+<QuickGrid Class="table" Items="FilteredBookings" Pagination="paginationState">
+    <PropertyColumn Property="booking => booking.DateOut" Sortable="true" Format="dd/MM/yyyy"/>
+    <PropertyColumn Property="booking => booking.DateIn" Sortable="true" Format="dd/MM/yyyy" />
+    <TemplateColumn Context="booking" Title="Vehicle" >
+        @GetVehicleString(booking.VehicleId)
+    </TemplateColumn>
+    <TemplateColumn Context="booking" Title="Customer" >
+        @GetCustomerString(booking.CustomerId)
+    </TemplateColumn>
+    
+    @* <PropertyColumn Property="booking => booking.DateCreated" /> *@
+    @* <PropertyColumn Property="booking => booking.DateUpdated" /> *@
+    @* <PropertyColumn Property="booking => booking.CreatedBy" /> *@
+    @* <PropertyColumn Property="booking => booking.UpdatedBy" /> *@
 
     <TemplateColumn Context="booking">
         <a href="@($"bookings/edit?id={booking.Id}")">Edit</a> |
         <a href="@($"bookings/details?id={booking.Id}")">Details</a> |
-        <a href="@($"bookings/delete?id={booking.Id}")">Delete</a>
+        <AuthorizeView Roles="Administrator">
+            | <a href="@($"bookings/delete?id={booking.Id}")">Delete</a>
+        </AuthorizeView>
     </TemplateColumn>
 </QuickGrid>
 
-@code {
-    private CarRentalManagementContext context = default!;
+<Paginator State="paginationState" />
 
-    protected override void OnInitialized()
+@code {
+    
+    
+    
+    PaginationState paginationState = new PaginationState { ItemsPerPage = 1 };
+    private CarRentalManagementContext context = default!;
+    private string userId = string.Empty;
+    private bool isAdmin = false;
+    
+    private IList<Vehicle> Vehicles = new List<Vehicle>();
+    private IList<Customer> Customers = new List<Customer>();
+    private Dictionary<int, Make> MakesDict = new Dictionary<int, Make>();
+    private Dictionary<int, Model> ModelsDict = new Dictionary<int, Model>();
+    private Dictionary<int, Colour> ColoursDict = new Dictionary<int, Colour>();
+    
+    
+    
+    
+    
+    private IQueryable<Booking> FilteredBookings => isAdmin ? context.Booking : context.Booking.Where(e => e.CreatedBy == userId);
+    
+    private string GetVehicleString(int vehicleId)
     {
+        
+        var vehicle = Vehicles.FirstOrDefault(v => v.Id == vehicleId);
+        return vehicle == null ? string.Empty : $"{MakesDict[vehicle.MakeId].Name} {ModelsDict[vehicle.ModelId].Name}{ColoursDict[vehicle.ColorId].Name}";
+    }
+    
+    private string GetCustomerString(int customerId)
+    {
+        var customer = Customers.FirstOrDefault(c => c.Id == customerId);
+        return customer == null ?
+            string.Empty : $"{customer.DrivingLicense} - Contact:{customer.ContactNumber}";
+    }
+
+    private bool _isAdmin;
+    
+    protected override async void OnInitialized()
+    {
+        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        
+// Get the userId claim
+        var userIdClaim = user.FindFirst("userId");
+        if (userIdClaim != null)
+        {
+            userId = userIdClaim.Value;
+        }
+// Check if the user is authenticated and is an administrator
+        if (user.Identity != null && user.Identity.IsAuthenticated)
+        {
+            _isAdmin = user.IsInRole("Administrator");
+        }
+        //Initialize the DbContext
+        context = DbFactory.CreateDbContext();
+//Load data from the database
+        Vehicles = context.Vehicle.ToList();
+//Get all the customers created by the user or all customers if the user is an administrator
+        Customers = context.Customer.Where(c => c.CreatedBy == userId).ToList();
+        if (_isAdmin)
+        {
+            Customers = context.Customer.ToList();
+        }
+        MakesDict = context.Make.ToDictionary(o => o.Id, o => o);
+        ModelsDict = context.Model.ToDictionary(o => o.Id, o => o);
+        ColoursDict = context.Colour.ToDictionary(o => o.Id, o => o);
+// Extract user information
+        userId = user.FindFirst("userId")?.Value ?? string.Empty;
+        isAdmin = user.IsInRole("Administrator");
         context = DbFactory.CreateDbContext();
     }
 
